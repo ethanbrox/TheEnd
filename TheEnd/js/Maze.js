@@ -18,7 +18,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
         for (var j = 0; j < this.rows; j++) {
             for (var i = 0; i < this.cols; i++) {
                 var chunk = new Chunk(i, j, this.chunkSize, this.cellSize);
-                this.color = 'lighgray';
+                chunk.color = 'lightgray';
                 chunk.createCells();
                 if (chunk) {
                     this.grid.push(chunk);
@@ -53,11 +53,17 @@ function Maze(rows, cols, chunkSize, cellSize) {
                 } else {
                     if (!this.done) {
                         console.log('Maze Created');
-                        this.unMaze();
+                        //this.unMaze();
                         this.done = true;
                     }
                 }
             }
+        }
+    }
+    
+    this.show = function(context){
+        for(var i = 0; i < this.grid.length; i++){
+            this.grid[i].show(context);
         }
     }
 
@@ -79,7 +85,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
                 var valid = true;
                 for (var i = -1; i < width + 1; i++) {
                     for (var j = -1; j < height + 1; j++) {
-                        if (this.grid[util.index(x + i, y + j, this.cols, this.rows)] && this.grid[util.index(x + i, y + j, this.cols, this.rows)].visited === true) {
+                        if (this.grid[index(x + i, y + j, this.cols, this.rows)] && this.grid[index(x + i, y + j, this.cols, this.rows)].visited === true) {
                             valid = false;
                         }
                     }
@@ -91,7 +97,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
 
                     for (var i = 0; i < width; i++) {
                         for (var j = 0; j < height; j++) {
-                            var chunk = this.grid[util.index(x + i, y + j, this.cols, this.rows)];
+                            var chunk = this.grid[index(x + i, y + j, this.cols, this.rows)];
                             if (chunk) {
                                 chunk.visited = true;
                                 chunk.roomId = id;
@@ -209,7 +215,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
             var found = false;
             for (var i = 0; i < this.cols; i++) {
                 for (var j = 0; j < this.rows; j++) {
-                    var chunk = this.grid[util.index(i, j, this.cols, this.rows)];
+                    var chunk = this.grid[index(i, j, this.cols, this.rows)];
                     if (chunk) {
                         var count = 0;
                         //find out if the given cell can be removed
@@ -236,12 +242,12 @@ function Maze(rows, cols, chunkSize, cellSize) {
             //should have used the neighbors function!!!!!!!
             for (var i = 0; i < this.cols; i++) {
                 for (var j = 0; j < this.rows; j++) {
-                    var chunk = this.grid[util.index(i, j, this.cols, this.rows)];
+                    var chunk = this.grid[index(i, j, this.cols, this.rows)];
                     if (chunk) {
-                        var a = this.grid[util.index(i, j - 1, this.cols, this.rows)];
-                        var b = this.grid[util.index(i + 1, j, this.cols, this.rows)];
-                        var c = this.grid[util.index(i, j + 1, this.cols, this.rows)];
-                        var d = this.grid[util.index(i - 1, j, this.cols, this.rows)];
+                        var a = this.grid[index(i, j - 1, this.cols, this.rows)];
+                        var b = this.grid[index(i + 1, j, this.cols, this.rows)];
+                        var c = this.grid[index(i, j + 1, this.cols, this.rows)];
+                        var d = this.grid[index(i - 1, j, this.cols, this.rows)];
 
                         if (a) {
                             var count = 0;

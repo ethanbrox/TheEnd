@@ -12,23 +12,17 @@ window.onload = function () {
     var uiContext = uiDisplay.getContext('2d');
     
     var maze = new Maze(20, 20, 5, 5);
+    maze.createMaze();
 
     var show = function () {
         gameContext.clearRect(0, 0, width, height);
         uiContext.clearRect(0, 0, width, height);
         
         //Render the screen here
+        maze.show(gameContext);
         
-        
-        window.requestAnimationFrame(draw);
+        window.requestAnimationFrame(show);
     }
-
-    var update = function () {
-        setInterval(function () {
-
-        }, 25);
-    }
-
-    update();
+    
     show();
 }

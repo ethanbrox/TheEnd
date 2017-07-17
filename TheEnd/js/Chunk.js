@@ -36,7 +36,7 @@ function Chunk(i, j, n, cellSize) {
                 if (j === 0) {
                     if (i != 0) {
                         if (i != this.n - 1) {
-                            this.top.push(this.cells[util.index(i, j, this.n)]);
+                            this.top.push(this.cells[index(i, j, this.n)]);
                         }
                     }
                 }
@@ -44,7 +44,7 @@ function Chunk(i, j, n, cellSize) {
                 if (i === this.n - 1) {
                     if (j != 0) {
                         if (j != this.n - 1) {
-                            this.right.push(this.cells[util.index(i, j, this.n)]);
+                            this.right.push(this.cells[index(i, j, this.n)]);
                         }
                     }
                 }
@@ -52,7 +52,7 @@ function Chunk(i, j, n, cellSize) {
                 if (j === this.n - 1) {
                     if (i != 0) {
                         if (i != this.n - 1) {
-                            this.bottom.push(this.cells[util.index(i, j, this.n)]);
+                            this.bottom.push(this.cells[index(i, j, this.n)]);
                         }
                     }
                 }
@@ -60,15 +60,15 @@ function Chunk(i, j, n, cellSize) {
                 if (i === 0) {
                     if (j != 0) {
                         if (j != this.n - 1) {
-                            this.left.push(this.cells[util.index(i, j, this.n)]);
+                            this.left.push(this.cells[index(i, j, this.n)]);
                         }
                     }
                 }
             }
         }
     }
-
-    this.update = function () {
+    
+    this.show = function(context){
         for (var i = 0; i < this.top.length; i++) {
             this.top[i].wall = this.walls[0];
         }
@@ -85,6 +85,10 @@ function Chunk(i, j, n, cellSize) {
             for(var i = 0; i < this.cells.length; i++){
                 this.cells[i].color = 'black';
             }
+        }
+        
+        for(var i = 0; i < this.cells.length; i++){
+            this.cells[i].show(context);
         }
     }
 
@@ -109,10 +113,10 @@ function Chunk(i, j, n, cellSize) {
     this.getNeighbors = function (grid, cols, rows) {
         var neighbors = [];
 
-        var top = grid[util.index(i, j - 1, cols, rows)];
-        var right = grid[util.index(i + 1, j, cols, rows)];
-        var bottom = grid[util.index(i, j + 1, cols, rows)];
-        var left = grid[util.index(i - 1, j, cols, rows)];
+        var top = grid[index(i, j - 1, cols, rows)];
+        var right = grid[index(i + 1, j, cols, rows)];
+        var bottom = grid[index(i, j + 1, cols, rows)];
+        var left = grid[index(i - 1, j, cols, rows)];
 
         if (top) {
             neighbors.push(top);
@@ -133,14 +137,14 @@ function Chunk(i, j, n, cellSize) {
     this.getNeighborsSquare = function (grid, cols, rows) {
         var neighbors = [];
 
-        var top = grid[util.index(i, j - 1, cols, rows)];
-        var right = grid[util.index(i + 1, j, cols, rows)];
-        var bottom = grid[util.index(i, j + 1, cols, rows)];
-        var left = grid[util.index(i - 1, j, cols, rows)];
-        var topLeft = grid[util.index(i - 1, j - 1, cols, rows)];
-        var topRight = grid[util.index(i + 1, j - 1, cols, rows)];
-        var bottomRight = grid[util.index(i - 1, j + 1, cols, rows)];
-        var bottomLeft = grid[util.index(i + 1, j + 1, cols, rows)];
+        var top = grid[index(i, j - 1, cols, rows)];
+        var right = grid[index(i + 1, j, cols, rows)];
+        var bottom = grid[index(i, j + 1, cols, rows)];
+        var left = grid[index(i - 1, j, cols, rows)];
+        var topLeft = grid[index(i - 1, j - 1, cols, rows)];
+        var topRight = grid[index(i + 1, j - 1, cols, rows)];
+        var bottomRight = grid[index(i - 1, j + 1, cols, rows)];
+        var bottomLeft = grid[index(i + 1, j + 1, cols, rows)];
 
         if (top) {
             neighbors.push(top);
@@ -175,8 +179,8 @@ function Chunk(i, j, n, cellSize) {
         var corners = [];
 
         corners.push(this.cells[0]);
-        corners.push(this.cells[util.index(this.n - 1, 0, this.n)]);
-        corners.push(this.cells[util.index(0, this.n - 1, this.n)]);
+        corners.push(this.cells[index(this.n - 1, 0, this.n)]);
+        corners.push(this.cells[index(0, this.n - 1, this.n)]);
         corners.push(this.cells[this.cells.length - 1]);
 
         return corners;

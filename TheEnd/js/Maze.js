@@ -28,7 +28,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
 
         this.current = this.grid[0];
 
-        this.createRooms(2, 3);
+        this.createRooms(2, 2);
         this.clearOutRooms();
         this.createDoors();
 
@@ -60,10 +60,38 @@ function Maze(rows, cols, chunkSize, cellSize) {
             }
         }
     }
-    
-    this.show = function(context){
-        for(var i = 0; i < this.grid.length; i++){
+
+    this.show = function (context) {
+        for (var i = 0; i < this.grid.length; i++) {
             this.grid[i].show(context);
+        }
+    }
+    
+    this.createRoom = function(x, y, width, height){
+        for (var i = 0; i < width; i++) {
+            for (var j = 0; j < height; j++) {
+                if (this.grid[index(x + i, y + j, this.cols, this.rows)] && this.grid[index(x + i, y + j, this.cols, this.rows)].visited === true) {
+                    valid = false;
+                }
+            }
+        }
+
+        var id = Math.random();
+        this.rooms.push(id);
+        
+        var color = getRandomColor();    
+        
+        for (var i = 0; i < width; i++) {
+            for (var j = 0; j < height; j++) {
+                var chunk = this.grid[index(x + i, y + j, this.cols, this.rows)];
+                if (chunk) {
+                    chunk.visited = true;
+                    chunk.roomId = id;
+                    for (var h = 0; h < chunk.cells.length; h++) {
+                        chunk.cells[h].color = color;
+                    }
+                }
+            }
         }
     }
 
@@ -71,6 +99,12 @@ function Maze(rows, cols, chunkSize, cellSize) {
      *Creates the rooms in the grid and adds all new room id's to the rooms array.
      */
     this.createRooms = function (width, height) {
+        this.createRoom(1, 1, width, height);
+        this.createRoom(cols - 4, rows - 4, width, height);
+
+
+        //THE NORMAL ROOM CREATION
+        /*
         var tries = 500;
         var count = 0;
 
@@ -114,6 +148,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
                 count++;
             }
         }
+        */
     }
 
     /*
@@ -415,22 +450,22 @@ function Maze(rows, cols, chunkSize, cellSize) {
         }
         return v;
     }
-    
-    this.update = function(){
-        for(var i = 0; i < this.grid.length; i++){
+
+    this.update = function () {
+        for (var i = 0; i < this.grid.length; i++) {
             this.grid[i].update();
         }
     }
-    
-    this.getChunk = function(x, y){
-        for(var i = 0; i < this.grid.length; i++){
+
+    this.getChunk = function (x, y) {
+        for (var i = 0; i < this.grid.length; i++) {
             var chunk = this.grid[i];
             var sx = chunk.i * chunk.size;
             var sy = chunk.j * chunk.size;
             var ex = sx + chunk.size;
             var ey = sy + chunk.size;
-            
-            if(x >= sx && x < ex && y >= sy && y < ey){
+
+            if (x >= sx && x < ex && y >= sy && y < ey) {
                 return chunk;
             }
         }

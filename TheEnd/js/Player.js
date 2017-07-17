@@ -5,12 +5,38 @@ function Player(maze) {
     this.pressingLeft = false;
     this.pressingUp = false;
     this.pressingDown = false;
-    this.speed = 30;
+    this.speed = 15;
     this.radius = 70;
     this.color = 'white';
+    this.roomId = undefined;
+    
+    var check = true;
+    for(var i = 0; i < maze.grid.length; i++){
+        var chunk = maze.grid[i];
+        if(chunk.roomId && check){
+            this.x = chunk.i * chunk.size + (chunk.size / 2);
+            this.y = chunk.j * chunk.size + (chunk.size / 2);
+            check = false;
+            this.roomId = chunk.roomId;
+        }
+    }
+
+    this.show = function (context) {
+        context.beginPath();
+        context.fillStyle = this.color;
+        context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+        context.fill();
+    }
 
     this.updatePosition = function (maze) {
         var chunk = maze.getChunk(this.x, this.y);
+        
+        if(chunk.roomId){
+            if(chunk.roomId != this.roomId){
+                alert("You Found The End!");
+            }
+        }
+        
         var cell = chunk.getCell(this.x, this.y);
         cell.color = this.color;
         var neighbors = cell.getNeighbors(chunk.cells, chunk.n, chunk.n);

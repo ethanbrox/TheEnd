@@ -10,19 +10,59 @@ window.onload = function () {
     //Grab the context objects
     var gameContext = gameDisplay.getContext('2d');
     var uiContext = uiDisplay.getContext('2d');
-    
-    var maze = new Maze(20, 20, 5, 5);
+
+    var maze = new Maze(20, 20, 5, 128);
     maze.createMaze();
 
+    var player = new Player(maze);
+
     var show = function () {
+        gameContext.resetTransform();
         gameContext.clearRect(0, 0, width, height);
         uiContext.clearRect(0, 0, width, height);
-        
+
+        var screenX = Math.floor(gameDisplay.width / 2);
+        var screenY = Math.floor(gameDisplay.height / 2);
+        var disX = (screenX - player.x);
+        var disY = (screenY - player.y);
+
+        gameContext.translate(disX, disY);
+
         //Render the screen here
         maze.show(gameContext);
-        
+        player.updatePosition(maze);
+        player.show(gameContext);
+
         window.requestAnimationFrame(show);
     }
     
+    window.addEventListener('keydown', function (event) {
+        if (event.keyCode === 68) //d
+            player.pressingRight = true;
+
+        if (event.keyCode === 83) //s
+            player.pressingDown = true;
+
+        if (event.keyCode === 65) //a
+            player.pressingLeft = true;
+
+        if (event.keyCode === 87) //w
+            player.pressingUp = true;
+    });
+
+    window.addEventListener('keyup', function (event) {
+        if (event.keyCode === 68) //d
+            player.pressingRight = false;
+
+        if (event.keyCode === 83) //s
+            player.pressingDown = false;
+
+        if (event.keyCode === 65) //a
+            player.pressingLeft = false;
+
+        if (event.keyCode === 87) //w
+            player.pressingUp = false;
+    });
+
     show();
 }

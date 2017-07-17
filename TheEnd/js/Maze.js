@@ -99,8 +99,8 @@ function Maze(rows, cols, chunkSize, cellSize) {
      *Creates the rooms in the grid and adds all new room id's to the rooms array.
      */
     this.createRooms = function (width, height) {
-        this.createRoom(1, 1, width, height);
-        this.createRoom(cols - 4, rows - 4, width, height);
+        this.createRoom(2, 2, width, height);
+        this.createRoom(cols - 3, rows - 3, width, height);
 
 
         //THE NORMAL ROOM CREATION

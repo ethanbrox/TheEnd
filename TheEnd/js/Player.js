@@ -33,7 +33,10 @@ function Player(maze) {
         
         if(chunk.roomId){
             if(chunk.roomId != this.roomId){
-                alert("You Found The End!");
+                var win = confirm("You Found The End!");
+                if(win){
+                    location.reload();
+                }
             }
         }
         

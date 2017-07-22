@@ -11,7 +11,7 @@ window.onload = function () {
     var gameContext = gameDisplay.getContext('2d');
     var uiContext = uiDisplay.getContext('2d');
 
-    var maze = new Maze(15, 15, 5, 128);
+    var maze = new Maze(12, 12, 5, 128);
     maze.createMaze();
 
     var player = new Player(maze);

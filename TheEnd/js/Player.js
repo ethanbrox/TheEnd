@@ -26,6 +26,8 @@ function Player(maze) {
         context.fillStyle = this.color;
         context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
         context.fill();
+        context.strokeWidth = 7;
+        context.stroke();
     }
 
     this.updatePosition = function (maze) {

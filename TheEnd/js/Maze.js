@@ -18,7 +18,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
 
     this.draw = function (context) {
 
-        
+        var chunk = player.getCurrentChunk(this.grid, this.cols);
         for (var i = 0; i < this.grid.length; i++) {
             this.grid[i].show(context);
         }

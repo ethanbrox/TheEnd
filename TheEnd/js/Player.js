@@ -106,6 +106,17 @@ function Player(maze) {
             }
         }
     }
+    
+    //this needs to be worked on not even close to being finished...
+    this.getCuurentChunk = function(grid, cols){
+        for(var i = 0; i < grid.length; i++){
+            var chunk = grid[i];
+            if(chunk){
+                var x = chunk.i % cols;
+                var y = chunk.i / width;
+            }
+        }
+    }
 
     this.colission = function (rectX, rectY, rectWidth, rectHeight) {
         var deltaX = this.x - Math.max(rectX, Math.min(this.x, rectX + rectWidth));

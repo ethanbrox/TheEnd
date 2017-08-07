@@ -3,12 +3,24 @@ function Maze(rows, cols, chunkSize, cellSize) {
     this.stack = [];
     this.rooms = [];
     this.current;
+
+    this.seed = 0;
     this.rows = rows;
     this.cols = cols;
     this.chunkSize = chunkSize;
     this.cellSize = cellSize;
+    this.roomAmount = 2;
+    this.trapChance = 0;
+    this.circleChance = 0;
+    this.unMazeAmount = 0;
     this.done = false;
     this.change = false;
+
+    this.draw = function(context){
+      for(var i = 0; i < this.grid.length; i++){
+        this.grid[i].show(context);
+      }
+    }
 
     /**
      *Creates the entire maze using the grid in the object.
@@ -28,9 +40,11 @@ function Maze(rows, cols, chunkSize, cellSize) {
 
         this.current = this.grid[0];
 
-        this.createRooms(2, 2);
+        this.createRooms(2, 2, this.roomAmount);
         this.clearOutRooms();
         this.createDoors();
+        //this.unMaze();
+        this.createTraps();
 
         while (!this.done) {
             if (this.current) {
@@ -66,89 +80,60 @@ function Maze(rows, cols, chunkSize, cellSize) {
             this.grid[i].show(context);
         }
     }
-    
-    this.createRoom = function(x, y, width, height){
-        for (var i = 0; i < width; i++) {
-            for (var j = 0; j < height; j++) {
-                if (this.grid[index(x + i, y + j, this.cols, this.rows)] && this.grid[index(x + i, y + j, this.cols, this.rows)].visited === true) {
-                    valid = false;
-                }
-            }
-        }
-
-        var id = Math.random();
-        this.rooms.push(id);
-        
-        var color = getRandomColor();    
-        
-        for (var i = 0; i < width; i++) {
-            for (var j = 0; j < height; j++) {
-                var chunk = this.grid[index(x + i, y + j, this.cols, this.rows)];
-                if (chunk) {
-                    chunk.visited = true;
-                    chunk.roomId = id;
-                    for (var h = 0; h < chunk.cells.length; h++) {
-                        chunk.cells[h].color = color;
-                    }
-                }
-            }
-        }
-    }
 
     /*
      *Creates the rooms in the grid and adds all new room id's to the rooms array.
      */
-    this.createRooms = function (width, height) {
-        this.createRoom(2, 2, width, height);
-        this.createRoom(cols - 3, rows - 3, width, height);
+    this.createRooms = function (width, height, numRooms) {
+      if(!numRooms){
+        numRooms = Number.MAX_SAFE_INTEGER;
+      }
 
+      var tries = 500;
+      var count = 0;
+      var amount = 0;
 
-        //THE NORMAL ROOM CREATION
-        /*
-        var tries = 500;
-        var count = 0;
+      while (count < tries && amount < numRooms) {
+          var placed = false;
 
-        while (count < tries) {
-            var placed = false;
+          var x = Math.floor(Math.random() * (this.cols + 1));
+          var y = Math.floor(Math.random() * (this.rows + 1));
+          //var width = Math.ceil(Math.random() * width + 1);
+          //var height = Math.ceil(Math.random() * height + 1);
+          if (x + width < this.cols + 1 && y + height < this.rows + 1) {
+              var valid = true;
+              for (var i = -1; i < width + 1; i++) {
+                  for (var j = -1; j < height + 1; j++) {
+                      if (this.grid[index(x + i, y + j, this.cols, this.rows)] && this.grid[index(x + i, y + j, this.cols, this.rows)].visited === true) {
+                          valid = false;
+                      }
+                  }
+              }
 
-            var x = Math.floor(Math.random() * this.cols + 1);
-            var y = Math.floor(Math.random() * this.rows + 1);
-            //var width = Math.ceil(Math.random() * w);
-            //var height = Math.ceil(Math.random() * h);
-            if (x + width < this.cols && y + height < this.rows) {
-                var valid = true;
-                for (var i = -1; i < width + 1; i++) {
-                    for (var j = -1; j < height + 1; j++) {
-                        if (this.grid[index(x + i, y + j, this.cols, this.rows)] && this.grid[index(x + i, y + j, this.cols, this.rows)].visited === true) {
-                            valid = false;
-                        }
-                    }
-                }
+              if (valid) {
+                  var id = Math.random();
+                  this.rooms.push(id);
 
-                if (valid) {
-                    var id = Math.random();
-                    this.rooms.push(id);
-
-                    for (var i = 0; i < width; i++) {
-                        for (var j = 0; j < height; j++) {
-                            var chunk = this.grid[index(x + i, y + j, this.cols, this.rows)];
-                            if (chunk) {
-                                chunk.visited = true;
-                                chunk.roomId = id;
-                                for(var h = 0; h < chunk.cells.length; h++){
-                                    chunk.cells[h].color = 'gray';
-                                }
-                            }
-                        }
-                    }
-                    placed = true;
-                }
-            }
-            if (!placed) {
-                count++;
-            }
-        }
-        */
+                  for (var i = 0; i < width; i++) {
+                      for (var j = 0; j < height; j++) {
+                          var chunk = this.grid[index(x + i, y + j, this.cols, this.rows)];
+                          if (chunk) {
+                              chunk.visited = true;
+                              chunk.roomId = id;
+                              for(var h = 0; h < chunk.cells.length; h++){
+                                  chunk.cells[h].color = 'gray';
+                              }
+                          }
+                      }
+                  }
+                  placed = true;
+                  amount++;
+              }
+          }
+          if (!placed) {
+              count++;
+          }
+      }
     }
 
     /*
@@ -214,7 +199,7 @@ function Maze(rows, cols, chunkSize, cellSize) {
                 var hasValidNeighbor = false;
                 var neighbors = c[k].getNeighbors(this.grid, this.cols, this.rows);
                 for (var l = 0; l < neighbors.length; l++) {
-                    if (!neighbors[l].roomId) {
+                    if (neighbors[l] && !neighbors[l].roomId) {
                         hasValidNeighbor = true;
                     }
                 }
@@ -227,15 +212,40 @@ function Maze(rows, cols, chunkSize, cellSize) {
             //pick a random cell that will work as a valid door
             var rand = Math.floor(Math.random() * r.length);
             var u = r[rand];
-            var notOpened = true;
-            var neighbors = u.getNeighbors(this.grid, this.cols, this.rows);
-            for (var k = 0; k < neighbors.length; k++) {
-                if (notOpened && !neighbors[k].roomId) {
-                    this.removeWalls(u, neighbors[k]);
-                    notOpened = false;
-                }
+            if(u){
+              var notOpened = true;
+              var neighbors = u.getNeighbors(this.grid, this.cols, this.rows);
+              for (var k = 0; k < neighbors.length; k++) {
+                  if (notOpened && neighbors[k] && !neighbors[k].roomId) {
+                      this.removeWalls(u, neighbors[k]);
+                      notOpened = false;
+                  }
+              }
             }
         }
+    }
+
+    this.createTraps = function(){
+      if(this.trapChance > 0){
+        for(var i = 0; i < this.grid.length; i++){
+          var chunk = this.grid[i];
+          if(!chunk.roomId){
+            var r = Math.random() * 100;
+            if(r < this.trapChance){
+              var options = [];
+              for(var k = 0; k < chunk.cells.length; k++){
+                if(chunk.cells[k] && !chunk.cells[k].wall){
+                  options.push(chunk.cells[k]);
+                }
+              }
+              if(options.length > 0){
+                var j = Math.floor(Math.random() * options.length);
+                options[j].trap = true;
+              }
+            }
+          }
+        }
+      }
     }
 
     /*
@@ -434,6 +444,23 @@ function Maze(rows, cols, chunkSize, cellSize) {
                 corners[2].wall = true;
             }
         }
+    }
+
+    this.createLoops = function(){
+      var chance = 5.0;
+
+      for(var i = 0; i < grid.length; i++){
+        //Create a random value to decide when to make a "loop"
+        var n = Math.random();
+        n = n * 100;
+        if(n < chance){
+          var chunk = grid[i];
+          var neighbors = chunk.getNeighbors;
+          for(var x = 0; x < neighbors.length; x++){
+            //if(neighbors[x] && neighbors[x].)
+          }
+        }
+      }
     }
 
     /*

@@ -26,6 +26,10 @@ function getRandomColor() {
     var g = Math.floor(Math.random() * 256);
     var b = Math.floor(Math.random() * 256);
     var color = 'rgb(' + r + ',' + g + ',' + b + ')';
-    
+
     return color;
+}
+
+function getRandomSeed(){
+
 }

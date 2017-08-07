@@ -7,10 +7,13 @@ function Cell(i, j, x, y, w) {
     this.color = 'white';
     this.id = null;
     this.wall = false;
-    
+    this.trap = false;
+
     this.show = function(context){
         if(this.wall){
             context.fillStyle = 'black';
+        } else if(this.trap){
+          context.fillStyle = 'red';
         } else {
             context.fillStyle = this.color;
         }
@@ -23,7 +26,7 @@ function Cell(i, j, x, y, w) {
         var right = grid[index(this.i + 1, this.j, cols, rows)];
         var bottom = grid[index(this.i, this.j + 1, cols, rows)];
         var left = grid[index(this.i - 1, this.j, cols, rows)];
-        
+
         //This will add them to the array no matter what, on purpose for collision...
         neighbors.push(top);
         neighbors.push(right);

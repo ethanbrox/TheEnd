@@ -67,7 +67,7 @@ function Chunk(i, j, n, cellSize) {
             }
         }
     }
-    
+
     this.show = function(context){
         for (var i = 0; i < this.top.length; i++) {
             this.top[i].wall = this.walls[0];
@@ -86,7 +86,7 @@ function Chunk(i, j, n, cellSize) {
                 this.cells[i].color = 'black';
             }
         }
-        
+
         for(var i = 0; i < this.cells.length; i++){
             this.cells[i].show(context);
         }
@@ -97,7 +97,7 @@ function Chunk(i, j, n, cellSize) {
         var neighbors = [];
 
         for (var i = 0; i < temp.length; i++) {
-            if (!temp[i].visited) {
+            if (temp[i] && !temp[i].visited) {
                 neighbors.push(temp[i]);
             }
         }
@@ -120,20 +120,28 @@ function Chunk(i, j, n, cellSize) {
 
         if (top) {
             neighbors.push(top);
+        } else {
+          neighbors.push(null);
         }
         if (right) {
             neighbors.push(right);
+        } else {
+          neighbors.push(null);
         }
         if (bottom) {
             neighbors.push(bottom);
+        } else {
+          neighbors.push(null);
         }
         if (left) {
             neighbors.push(left);
+        } else {
+          neighbors.push(null);
         }
 
         return neighbors;
     }
-    
+
     this.getNeighborsSquare = function (grid, cols, rows) {
         var neighbors = [];
 
@@ -185,7 +193,7 @@ function Chunk(i, j, n, cellSize) {
 
         return corners;
     }
-    
+
     this.getCell = function(x, y){
         for(var i = 0; i < this.cells.length; i++){
             var cell = this.cells[i];
@@ -193,7 +201,7 @@ function Chunk(i, j, n, cellSize) {
             var sy = cell.y;
             var ex = sx + cell.w;
             var ey = sy + cell.w;
-            
+
             if(x >= sx && x < ex && y >= sy && y < ey){
                 return cell;
             }
